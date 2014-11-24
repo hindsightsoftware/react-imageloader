@@ -9,7 +9,7 @@ module.exports =
     library: 'ReactImageLoader'
     libraryTarget: 'umd'
     target: 'web'
-  externals: ['React', react: 'React']
+  externals: ['react', react: 'react']
   module:
     loaders: [
       {test: /\.coffee$/, loader: 'coffee'}
