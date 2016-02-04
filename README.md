@@ -16,13 +16,21 @@ Usage
 -----
 
 ```javascript
-var ImageLoader = require('react-imageloader');
+import React from 'react';
+import ImageLoader from 'react-imageloader';
 
-// ...
+function preloader() {
+  return <img src="spinner.gif" />;
+}
 
-<ImageLoader src="/path/to/image.jpg">
-  Image load failed!
-</ImageLoader>
+React.render((
+  <ImageLoader
+    src="/path/to/image.jpg"
+    wrapper={React.DOM.div}
+    preloader={preloader}>
+    Image load failed!
+  </ImageLoader>
+), document.body);
 
 ```
 
@@ -30,46 +38,59 @@ var ImageLoader = require('react-imageloader');
 Props
 -----
 
-<table>
-  <thead>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Description</th>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>src</code></td>
-      <td>string</td>
-      <td>The URL of the image to be loaded.</td>
-    </tr>
-    <tr>
-      <td><code>preloader</code></td>
-      <td>function</td>
-      <td>A React class or other function that returns a component instance to
-          be shown while the image loads.</td>
-    </tr>
-    <tr>
-      <td><code>onLoad</code></td>
-      <td>function</td>
-      <td>A handler for the React <code>React.DOM.img</code>
-          <code>onLoad</code> event.</td>
-    </tr>
-    <tr>
-      <td><code>onError</code></td>
-      <td>function</td>
-      <td>A handler for the React <code>React.DOM.img</code>
-          <code>onError</code> event.</td>
-    </tr>
-    <tr>
-      <td><code>wrapper</code></td>
-      <td>function</td>
-      <td>A React class or other function that returns a component instance to
-          be used as the wrapper component. Defaults to
-          <code>React.DOM.span</code>.</td>
-    </tr>
-  </tbody>
-</table>
+Name        | Type     | Description
+------------|----------|------------
+`className` | string   | An optional class name for the `wrapper` component.
+`imgProps`  | object   | An optional object containing props for the underlying `img` component.
+`onError`   | function | An optional handler for the [error] event.
+`onLoad`    | function | An optional handler for the [load] event.
+`preloader` | function | An optional function that returns a React element to be shown while the image loads.
+`src`       | string   | The URL of the image to be loaded.
+`style`     | object   | An optional object containing styles for the `wrapper` component.
+`wrapper`   | function | A function that takes a props argument and returns a React element to be used as the wrapper component. Defaults to `React.DOM.span`.
 
 
-[FOUC]: http://en.wikipedia.org/wiki/FOUC/
+Children
+--------
+
+Children passed to `ImageLoader` will be rendered *only if* the image fails to load. Children are essentially alternate content to show when the image is missing or unavailable.
+
+For example:
+
+```javascript
+
+React.createClass({
+  // This will only show if "notgonnaload.jpg" doesn't load.
+  errorMessage() {
+    return (
+      <div>
+        <h2>Something went wrong!</h2>
+        <p>Not gonna load "notgonnaload.jpg". bummer.</p>
+      </div>
+    );
+  },
+  render() {
+    return (
+      <ImageLoader src="notgonnaload.jpg">
+        {this.errorMessage()}
+      </ImageLoader>
+    );
+  }
+})
+
+```
+
+
+Upgrading to 2.x
+----------------
+
+If you are upgrading to the 2.x version, there are a couple of changes you should be aware of:
+
+* Since 2.0, `ImageLoader` requires **React >= 0.13**
+* Loading is done 'off DOM' in a JavaScript `Image()` (instead of hidden in the DOM via a React `<img />`), so values passed to the `onLoad` and `onError` callbacks will be the browser native values, not React's synthesized values. This should't be a problem for the vast majority of use cases, but it is *technically* an API change.
+
+
+[FOUC]: http://en.wikipedia.org/wiki/FOUC
 [React]: http://facebook.github.io/react/
+[load]: https://developer.mozilla.org/en-US/docs/Web/Events/load
+[error]: https://developer.mozilla.org/en-US/docs/Web/Events/error
