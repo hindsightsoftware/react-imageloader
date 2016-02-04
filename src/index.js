@@ -24,7 +24,7 @@ export default class ImageLoader extends React.Component {
   };
 
   static defaultProps = {
-    wrapper: span,
+    wrapper: span
   };
 
   constructor(props) {

@@ -10,11 +10,18 @@ export default {
     libraryTarget: 'umd',
     target: 'web',
   },
-  externals: ['React', {react: 'React'}],
+  externals: ['react', {
+    react: 'react'
+  }],
   module: {
-    loaders: [
-      {test: /\.js$/, exclude: /node_modules/, loader: 'babel?stage=0'},
-    ],
+    loaders: [{
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'babel-loader',
+      query: {
+        presets: ['es2015', 'react', 'stage-0']
+      }
+    }, ],
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin(),
